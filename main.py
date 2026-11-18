@@ -3,10 +3,13 @@ import matplotlib.pyplot as plt
 
 dates = pd.read_csv("openpowerlifting.csv")
 print(dates.head())
-pivotData = dates.pivot(columns = "Equipment", values = "BestBenchKg")
-print(pivotData)
-pivotData.plot(kind = "box", figsize = (10,6))
-
-dates["BenchGroup"] = pd.cut(dates["BestBenchKg"], bins = [0, 60, 100, 140, 180, 250])
-dates.groupby("Equipment")["BenchGroup"].value_counts().unstack().plot(kind = "bar", stacked = True, figsize = (10, 6))
-plt.show()
+missing = dates["BestBenchKg"].isnull()
+print(missing)
+print(dates[missing])
+print(dates.dropna(subset = ["BestSquatKg", "BestDeadliftKg"], how = "all"))
+print(dates.dropna(axis=1 , thresh=380000))
+print(dates.fillna({"BestDeadliftKg":-1}))
+print(dates.fillna({"BestDeadliftKg":dates["BestDeadliftKg"].median()}))
+mask = (dates["Name"] == "Angie Belk Terry") & (dates["MeetID"] == 0)
+dates.loc[mask, "Wilks"] = 400
+print(dates)
