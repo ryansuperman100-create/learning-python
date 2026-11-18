@@ -1,15 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
-dates = pd.read_csv("openpowerlifting.csv")
-print(dates.head())
-missing = dates["BestBenchKg"].isnull()
-print(missing)
-print(dates[missing])
-print(dates.dropna(subset = ["BestSquatKg", "BestDeadliftKg"], how = "all"))
-print(dates.dropna(axis=1 , thresh=380000))
-print(dates.fillna({"BestDeadliftKg":-1}))
-print(dates.fillna({"BestDeadliftKg":dates["BestDeadliftKg"].median()}))
-mask = (dates["Name"] == "Angie Belk Terry") & (dates["MeetID"] == 0)
-dates.loc[mask, "Wilks"] = 400
-print(dates)
+records = pd.read_csv("openpowerlifting.csv")
+print(records.head())
+print(records.describe())
+records[["Wilks"]].plot(kind = "hist")
+wilks_mm = MinMaxScaler().fit_transform(records[["Wilks"]])
+wilks_mm = pd.DataFrame(wilks_mm, columns="Wilks")
+print(wilks_mm)
